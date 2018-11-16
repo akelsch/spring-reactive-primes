@@ -13,10 +13,12 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
 @SpringBootApplication
 public class PrimesApplication {
@@ -28,18 +30,28 @@ public class PrimesApplication {
     @Bean
     public RouterFunction<ServerResponse> route() {
         return RouterFunctions
-                .route(GET("/primes").and(accept(TEXT_PLAIN)), this::primesHandler);
+                .route(GET("/primes"), this::primesHandler);
     }
 
     private Mono<ServerResponse> primesHandler(ServerRequest request) {
+        // Count
         var n = request.queryParam("n").orElse("empty");
         Assert.isTrue(n.matches("\\d+"), "Parameter 'n' must be a sequence of numbers!");
 
+        // Format
+        var f = request.queryParam("f").orElse("text");
+
         var primes = getPrimes(Integer.parseInt(n));
+
+        if (f.equals("json")) {
+            return ServerResponse.ok()
+                    .contentType(APPLICATION_JSON)
+                    .body(BodyInserters.fromObject(primes));
+        }
 
         return ServerResponse.ok()
                 .contentType(TEXT_PLAIN)
-                .body(BodyInserters.fromObject(primes.toString()));
+                .body(BodyInserters.fromObject(convertListToString(primes)));
     }
 
     private static ArrayList<Integer> getPrimes(int count) {
@@ -53,5 +65,11 @@ public class PrimesApplication {
         }
 
         return primes;
+    }
+
+    private static <T> String convertListToString(List<T> list) {
+        return list.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(" "));
     }
 }
