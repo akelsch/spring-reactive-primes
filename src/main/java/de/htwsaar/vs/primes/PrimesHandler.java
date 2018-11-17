@@ -17,18 +17,24 @@ public class PrimesHandler {
         var n = request.queryParam("n").orElse("empty");
         Assert.isTrue(n.matches("\\d+"), "Parameter 'n' must be a sequence of numbers!");
 
-        var format = request.queryParam("format").orElse("text");
+        var format = request.queryParam("format").orElse("string");
 
         var primes = PrimesUtil.findFirstPrimes(Integer.parseInt(n));
 
-        if (format.equals("json")) {
-            return ServerResponse.ok()
-                    .contentType(APPLICATION_JSON)
-                    .body(BodyInserters.fromObject(primes));
+        switch (format) {
+            case "string":
+            default:
+                return ServerResponse.ok()
+                        .contentType(TEXT_PLAIN)
+                        .body(BodyInserters.fromObject(PrimesUtil.convertListToString(primes)));
+            case "array":
+                return ServerResponse.ok()
+                        .contentType(APPLICATION_JSON)
+                        .body(BodyInserters.fromObject(primes));
+            case "combined":
+                return ServerResponse.ok()
+                        .contentType(APPLICATION_JSON)
+                        .body(BodyInserters.fromObject(new Primes(primes)));
         }
-
-        return ServerResponse.ok()
-                .contentType(TEXT_PLAIN)
-                .body(BodyInserters.fromObject(PrimesUtil.convertListToString(primes)));
     }
 }

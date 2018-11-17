@@ -12,7 +12,7 @@ public final class PrimesUtil {
     private PrimesUtil() {
     }
 
-    public static ArrayList<Integer> findFirstPrimes(int n) {
+    public static List<Integer> findFirstPrimes(int n) {
         Assert.isTrue(n > 0, "Prime number count must be a positive natural number!");
 
         var primes = new ArrayList<Integer>();
