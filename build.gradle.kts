@@ -18,8 +18,16 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "junit")
+    }
     testImplementation("io.projectreactor:reactor-test")
 
     implementation("org.apache.commons:commons-math3:3.6.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
