@@ -6,7 +6,9 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
 @Configuration
 public class PrimesRouter {
@@ -14,6 +16,7 @@ public class PrimesRouter {
     @Bean
     public RouterFunction<ServerResponse> route(PrimesHandler primesHandler) {
         return RouterFunctions
-                .route(GET("/primes"), primesHandler::primes);
+                .route(GET("/primes"), primesHandler::primes)
+                .andRoute(GET("/stream").and(accept(TEXT_EVENT_STREAM)), primesHandler::primesStream);
     }
 }
