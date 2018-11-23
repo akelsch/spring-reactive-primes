@@ -1,5 +1,6 @@
 package de.htwsaar.vs.primes;
 
+import org.apache.commons.math3.primes.Primes;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -33,7 +34,7 @@ public class PrimesHandler {
             case "combined":
                 return ServerResponse.ok()
                         .contentType(APPLICATION_JSON)
-                        .body(BodyInserters.fromObject(new Primes(primes)));
+                        .body(BodyInserters.fromObject(new CombinedPrimes(primes)));
         }
     }
 
@@ -44,7 +45,7 @@ public class PrimesHandler {
         var primes = Flux.<Integer, Integer>generate(
                 () -> 2,
                 (state, sink) -> {
-                    var prime = org.apache.commons.math3.primes.Primes.nextPrime(state);
+                    var prime = Primes.nextPrime(state);
                     sink.next(prime);
 
                     return prime + 1;

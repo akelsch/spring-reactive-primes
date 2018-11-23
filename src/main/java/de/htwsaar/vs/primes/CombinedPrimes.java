@@ -2,12 +2,12 @@ package de.htwsaar.vs.primes;
 
 import java.util.List;
 
-public class Primes {
+public class CombinedPrimes {
 
     private final String string;
     private final List<Integer> array;
 
-    public Primes(List<Integer> array) {
+    public CombinedPrimes(List<Integer> array) {
         string = PrimesUtil.convertListToString(array);
         this.array = array;
     }
