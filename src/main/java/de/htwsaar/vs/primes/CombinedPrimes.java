@@ -7,8 +7,8 @@ public class CombinedPrimes {
     private final String string;
     private final List<Integer> array;
 
-    public CombinedPrimes(List<Integer> array) {
-        string = PrimesUtil.convertListToString(array);
+    public CombinedPrimes(String string, List<Integer> array) {
+        this.string = string;
         this.array = array;
     }
 

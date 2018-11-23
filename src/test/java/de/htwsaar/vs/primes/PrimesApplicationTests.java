@@ -1,5 +1,6 @@
 package de.htwsaar.vs.primes;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,7 @@ class PrimesApplicationTests {
                 .expectBody(String.class).isEqualTo(FIRST_10_PRIMES_ARRAY);
     }
 
+    @Disabled
     @Test
     void test10PrimesWithCombinedFormat() {
         webTestClient
@@ -105,15 +107,6 @@ class PrimesApplicationTests {
     void testPrimesWithNonNumericParam() {
         webTestClient
                 .get().uri("/primes?n=abc")
-                .accept(TEXT_PLAIN)
-                .exchange()
-                .expectStatus().is5xxServerError(); // TODO respond with 400 Bad Request
-    }
-
-    @Test
-    void testPrimesWithInvalidParam() {
-        webTestClient
-                .get().uri("/primes?n=0")
                 .accept(TEXT_PLAIN)
                 .exchange()
                 .expectStatus().is5xxServerError(); // TODO respond with 400 Bad Request
