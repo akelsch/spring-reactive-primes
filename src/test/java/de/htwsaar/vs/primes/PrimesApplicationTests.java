@@ -1,6 +1,5 @@
 package de.htwsaar.vs.primes;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,6 @@ class PrimesApplicationTests {
                 .expectBody(String.class).isEqualTo(FIRST_10_PRIMES_ARRAY);
     }
 
-    @Disabled
     @Test
     void test10PrimesWithCombinedFormat() {
         webTestClient

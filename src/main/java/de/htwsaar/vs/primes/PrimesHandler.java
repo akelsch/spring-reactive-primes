@@ -30,10 +30,15 @@ public class PrimesHandler {
                         .contentType(APPLICATION_JSON)
                         .body(primes, Integer.class);
             case "combined":
-                // TODO convert Flux<Integer> to Mono<CombinedPrimes>
+                var primesString = PrimesUtil.convertFluxToString(primes);
+                var primesArray = primes.collectList();
+
+                var combinedPrimes = primesString
+                        .zipWith(primesArray, CombinedPrimes::new);
+
                 return ServerResponse.ok()
                         .contentType(APPLICATION_JSON)
-                        .body(Mono.empty(), Object.class);
+                        .body(combinedPrimes, CombinedPrimes.class);
         }
     }
 
