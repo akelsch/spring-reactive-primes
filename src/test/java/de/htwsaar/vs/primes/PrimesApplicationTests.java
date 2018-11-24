@@ -93,12 +93,12 @@ class PrimesApplicationTests {
     }
 
     @Test
-    void testPrimesWithoutRequiredParam() {
+    void testPrimesWithEmptyParam() {
         webTestClient
                 .get().uri("/primes")
                 .accept(TEXT_PLAIN)
                 .exchange()
-                .expectStatus().is5xxServerError(); // TODO respond with 400 Bad Request
+                .expectStatus().isBadRequest();
     }
 
     @Test
@@ -107,6 +107,15 @@ class PrimesApplicationTests {
                 .get().uri("/primes?n=abc")
                 .accept(TEXT_PLAIN)
                 .exchange()
-                .expectStatus().is5xxServerError(); // TODO respond with 400 Bad Request
+                .expectStatus().isBadRequest();
+    }
+
+    @Test
+    void testPrimesWithOutOfRangeParam() {
+        webTestClient
+                .get().uri("/primes?n=2147483648")
+                .accept(TEXT_PLAIN)
+                .exchange()
+                .expectStatus().isBadRequest();
     }
 }
