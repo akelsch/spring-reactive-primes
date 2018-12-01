@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.springframework.boot") version "2.1.0.RELEASE"
+    id("org.springframework.boot") version "2.1.1.RELEASE"
 }
 
 apply(plugin = "io.spring.dependency-management")
@@ -22,12 +22,12 @@ dependencies {
         exclude(module = "junit")
     }
     testImplementation("io.projectreactor:reactor-test")
-
-    implementation("org.apache.commons:commons-math3:3.6.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    implementation("org.apache.commons:commons-math3:3.6.1")
 }
 
-tasks.withType<Test> {
+tasks.test {
     useJUnitPlatform()
 }
