@@ -16,7 +16,7 @@ import static org.springframework.http.MediaType.*;
 public class PrimesHandler {
 
     public Mono<ServerResponse> primes(ServerRequest request) {
-        final var n = PrimesUtil.requireIntQueryParam(request, "n");
+        final var n = PrimesUtil.parseQueryParam(request.queryParam("n").orElse(""));
         final var format = request.queryParam("format").orElse("");
 
         var primes = generatePrimesFlux().take(n);
@@ -33,8 +33,8 @@ public class PrimesHandler {
     }
 
     public Mono<ServerResponse> primesStream(ServerRequest request) {
-        final var n = PrimesUtil.requireIntQueryParam(request, "n");
-        final var delay = PrimesUtil.getIntQueryParam(request, "delay", 250);
+        final var n = PrimesUtil.parseQueryParam(request.queryParam("n").orElse(""));
+        final var delay = PrimesUtil.parseQueryParam(request.queryParam("n").orElse(""), 250);
 
         var primes = generatePrimesFlux()
                 .delayElements(Duration.ofMillis(delay))
