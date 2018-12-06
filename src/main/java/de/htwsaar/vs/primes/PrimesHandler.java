@@ -3,6 +3,7 @@ package de.htwsaar.vs.primes;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -16,29 +17,16 @@ public class PrimesHandler {
         final var n = PrimesUtil.requireIntQueryParam(request, "n");
         final var format = request.queryParam("format").orElse("");
 
-        var primes = PrimesUtil.generatePrimesFlux()
-                .take(n);
+        var primes = PrimesUtil.generatePrimesFlux().take(n);
 
         switch (format) {
             case "string":
             default:
-                return ServerResponse.ok()
-                        .contentType(TEXT_PLAIN)
-                        .body(PrimesUtil.convertFluxToString(primes), String.class);
+                return handlePrimesStringCase(primes);
             case "array":
-                return ServerResponse.ok()
-                        .contentType(APPLICATION_JSON)
-                        .body(primes, Integer.class);
+                return handlePrimesArrayCase(primes);
             case "combined":
-                var primesString = PrimesUtil.convertFluxToString(primes);
-                var primesArray = primes.collectList();
-
-                var combinedPrimes = primesString
-                        .zipWith(primesArray, CombinedPrimes::new);
-
-                return ServerResponse.ok()
-                        .contentType(APPLICATION_JSON)
-                        .body(combinedPrimes, CombinedPrimes.class);
+                return handlePrimesCombinedCase(primes);
         }
     }
 
@@ -53,5 +41,29 @@ public class PrimesHandler {
         return ServerResponse.ok()
                 .contentType(TEXT_EVENT_STREAM)
                 .body(primes, Integer.class);
+    }
+
+    private Mono<ServerResponse> handlePrimesStringCase(Flux<Integer> primes) {
+        return ServerResponse.ok()
+                .contentType(TEXT_PLAIN)
+                .body(PrimesUtil.convertFluxToString(primes), String.class);
+    }
+
+    private Mono<ServerResponse> handlePrimesArrayCase(Flux<Integer> primes) {
+        return ServerResponse.ok()
+                .contentType(APPLICATION_JSON)
+                .body(primes, Integer.class);
+    }
+
+    private Mono<ServerResponse> handlePrimesCombinedCase(Flux<Integer> primes) {
+        var primesString = PrimesUtil.convertFluxToString(primes);
+        var primesArray = primes.collectList();
+
+        var combinedPrimes = primesString
+                .zipWith(primesArray, CombinedPrimes::new);
+
+        return ServerResponse.ok()
+                .contentType(APPLICATION_JSON)
+                .body(combinedPrimes, CombinedPrimes.class);
     }
 }
