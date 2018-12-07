@@ -16,9 +16,6 @@ import static org.springframework.http.MediaType.*;
 @AutoConfigureWebTestClient
 class PrimesApplicationTests {
 
-    private static final String FIRST_10_PRIMES_STRING = "2 3 5 7 11 13 17 19 23 29";
-    private static final String FIRST_10_PRIMES_ARRAY = "[2,3,5,7,11,13,17,19,23,29]";
-
     @Autowired
     private WebTestClient webTestClient;
 
@@ -30,7 +27,7 @@ class PrimesApplicationTests {
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(TEXT_PLAIN)
-                .expectBody(String.class).isEqualTo(FIRST_10_PRIMES_STRING);
+                .expectBody(String.class).isEqualTo("2 3 5 7 11 13 17 19 23 29");
     }
 
     @Test
@@ -41,7 +38,7 @@ class PrimesApplicationTests {
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(TEXT_PLAIN)
-                .expectBody(String.class).isEqualTo(FIRST_10_PRIMES_STRING);
+                .expectBody(String.class).isEqualTo("2 3 5 7 11 13 17 19 23 29");
     }
 
     @Test
@@ -52,7 +49,7 @@ class PrimesApplicationTests {
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(APPLICATION_JSON)
-                .expectBody(String.class).isEqualTo(FIRST_10_PRIMES_ARRAY);
+                .expectBody(String.class).isEqualTo("[2,3,5,7,11,13,17,19,23,29]");
     }
 
     @Test
@@ -64,7 +61,7 @@ class PrimesApplicationTests {
                 .expectStatus().isOk()
                 .expectHeader().contentType(APPLICATION_JSON)
                 .expectBody()
-                .jsonPath("$.string").isEqualTo(FIRST_10_PRIMES_STRING)
+                .jsonPath("$.string").isEqualTo("2 3 5 7 11 13 17 19 23 29")
                 .jsonPath("$.array").isArray();
     }
 
