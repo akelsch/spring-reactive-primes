@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.test.StepVerifier;
 
@@ -67,7 +68,7 @@ class PrimesApplicationTests {
 
     @Test
     void test10PrimesStream() {
-        var result = webTestClient
+        FluxExchangeResult<Integer> result = webTestClient
                 .get().uri("/stream?n=10&delay=0")
                 .accept(TEXT_EVENT_STREAM)
                 .exchange()

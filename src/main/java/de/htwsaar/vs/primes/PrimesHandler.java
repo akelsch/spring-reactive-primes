@@ -8,6 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.*;
@@ -16,10 +17,10 @@ import static org.springframework.http.MediaType.*;
 public class PrimesHandler {
 
     public Mono<ServerResponse> primes(ServerRequest request) {
-        final var n = PrimesUtil.parseQueryParam(request.queryParam("n").orElse(""));
-        final var format = request.queryParam("format").orElse("");
+        final int n = PrimesUtil.parseQueryParam(request.queryParam("n").orElse(""));
+        final String format = request.queryParam("format").orElse("");
 
-        var primes = generatePrimesFlux().take(n);
+        Flux<Integer> primes = generatePrimesFlux().take(n);
 
         switch (format) {
             case "string":
@@ -33,10 +34,10 @@ public class PrimesHandler {
     }
 
     public Mono<ServerResponse> primesStream(ServerRequest request) {
-        final var n = PrimesUtil.parseQueryParam(request.queryParam("n").orElse(""));
-        final var delay = PrimesUtil.parseQueryParam(request.queryParam("n").orElse(""), 250);
+        final int n = PrimesUtil.parseQueryParam(request.queryParam("n").orElse(""));
+        final int delay = PrimesUtil.parseQueryParam(request.queryParam("n").orElse(""), 250);
 
-        var primes = generatePrimesFlux()
+        Flux<Integer> primes = generatePrimesFlux()
                 .delayElements(Duration.ofMillis(delay))
                 .take(n);
 
@@ -49,7 +50,7 @@ public class PrimesHandler {
         return Flux.generate(
                 () -> 2,
                 (state, sink) -> {
-                    var prime = Primes.nextPrime(state);
+                    int prime = Primes.nextPrime(state);
                     sink.next(prime);
 
                     return prime + 1;
@@ -75,10 +76,10 @@ public class PrimesHandler {
     }
 
     private Mono<ServerResponse> handlePrimesCombinedCase(Flux<Integer> primes) {
-        var primesString = convertFluxToString(primes);
-        var primesArray = primes.collectList();
+        Mono<String> primesString = convertFluxToString(primes);
+        Mono<List<Integer>> primesArray = primes.collectList();
 
-        var combinedPrimes = primesString
+        Mono<CombinedPrimes> combinedPrimes = primesString
                 .zipWith(primesArray, CombinedPrimes::new);
 
         return ServerResponse.ok()
