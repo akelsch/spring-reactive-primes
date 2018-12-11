@@ -35,7 +35,7 @@ public class PrimesHandler {
 
     public Mono<ServerResponse> primesStream(ServerRequest request) {
         final int n = PrimesUtil.parseQueryParam(request.queryParam("n").orElse(""));
-        final int delay = PrimesUtil.parseQueryParam(request.queryParam("n").orElse(""), 250);
+        final int delay = PrimesUtil.parseQueryParam(request.queryParam("delay").orElse(""), 250);
 
         Flux<Integer> primes = generatePrimesFlux()
                 .delayElements(Duration.ofMillis(delay))
