@@ -10,10 +10,13 @@ public final class PrimesUtil {
 
     public static int parseQueryParam(String queryParam) {
         try {
+            if (queryParam.startsWith("-"))
+                throw new NumberFormatException(String.format("Illegal leading minus sign on string '%s'", queryParam));
+
             return Integer.parseInt(queryParam);
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, String.format("Could not parse '%s' as an Integer", queryParam));
+                    HttpStatus.BAD_REQUEST, String.format("Could not parse '%s' as a non-negative integer", queryParam));
         }
     }
 

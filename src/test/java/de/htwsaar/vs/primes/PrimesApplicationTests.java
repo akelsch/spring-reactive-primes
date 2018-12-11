@@ -109,6 +109,15 @@ class PrimesApplicationTests {
     }
 
     @Test
+    void testPrimesWithNegativeParam() {
+        webTestClient
+                .get().uri("/primes?n=-10")
+                .accept(TEXT_PLAIN)
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
+
+    @Test
     void testPrimesWithOutOfRangeParam() {
         webTestClient
                 .get().uri("/primes?n=2147483648")
